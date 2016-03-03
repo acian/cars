@@ -1,0 +1,64 @@
+body {
+	background: #C29C9C;
+}
+
+a {
+	color: #D8D8D8;
+}
+
+.page-content {
+	padding: 1%;	
+}
+
+.powered {
+    font-size: 10px;
+    margin-top: 12px;
+    margin-left: 10px;
+}
+
+#carsTable {
+	margin-top: 10px;
+	margin-left: 2%;
+	width: 96%;
+	text-align: left;
+	background-color: rgba(24, 24, 24, 0.5);
+	box-shadow: -8px -5px 18px rgba(117, 72, 72, 0.52);
+	border-radius: 15px;
+	border-style: none;
+}
+
+#carsTable tr td{
+	text-align: left;
+}
+
+#carsTable tr th {
+	text-align: left;
+	font-size: 16px;
+	color: rgba(24, 24, 24, 0.5);
+}
+
+#show-dialog {
+	margin-top: 10px;
+}
+
+#carsTable tr:hover {
+	background-color: #ff5651;
+	color: black;
+}
+
+.mdl-dialog {
+	border-radius: 30px;
+}
+
+/* PAGINATION */
+
+.pagination {
+	width: 100%;
+	text-align: center;
+	margin-top: 5px;
+}
+
+/* Filter */
+.filterPanel {
+	margin-left: 2%;
+}
