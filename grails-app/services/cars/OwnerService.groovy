@@ -10,19 +10,20 @@ class OwnerService {
 
         def result = criteria.list {
             if (params.dni != null && params.dni != "") {
-                eq('dni', new Long(params.dni))
+                ilike('dni', new Long(params.dni))
             }
 
             if (params.lastName != null && params.lastName != "") {
-                eq('lastName', params.lastName)
+                params.lastName = "%"+params.lastName+"%"
+                ilike('lastName', params.lastName+"%")
             }
 
             if (params.name != null && params.name != "") {
-                eq('name', params.name)
+                ilike('name', params.name+"%")
             }
 
             if (params.nationality != null && params.nationality != "") {
-                eq('nationality', params.nationality)
+                ilike('nationality', params.nationality+"%")
             }
 
             firstResult(params.offset)
@@ -41,23 +42,20 @@ class OwnerService {
             }
 
             if (params.dni != null && params.dni != "") {
-                eq('dni', new Long(params.dni))
+                ilike('dni', new Long(params.dni))
             }
 
             if (params.lastName != null && params.lastName != "") {
-                eq('lastName', params.lastName)
+                ilike('lastName', params.lastName+"%")
             }
 
             if (params.name != null && params.name != "") {
-                eq('name', params.name)
+                ilike('name', params.name+"%")
             }
 
             if (params.nationality != null && params.nationality != "") {
-                eq('nationality', params.nationality)
+                ilike('nationality', params.nationality+"%")
             }
-
-            firstResult(params.offset)
-            maxResults(params.max)
         }
 
         return result

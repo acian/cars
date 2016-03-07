@@ -1,9 +1,14 @@
 /* Limpia el formulario del popup */
 function clearDialog() {
     $('#id').val(null);
+    $('#idOwner').val(null);
     document.querySelector('#year').parentNode.MaterialTextfield.change("");
     document.querySelector('#make').parentNode.MaterialTextfield.change("");
     document.querySelector('#model').parentNode.MaterialTextfield.change("");
+    document.querySelector('#plate').parentNode.MaterialTextfield.change("");
+    document.querySelector('#ownerLastName').parentNode.MaterialTextfield.change("");
+
+    $('#deleteBtn').hide();
 };
 
 /* Configuracion del popup */
@@ -34,6 +39,7 @@ var getAll = function() {
                 "                <td class='mdl-data-table__cell--non-numeric'><a href='#' onclick='openPopup(" + value.id + ");'>" + value.year + "</a></td>" +
                 "                <td class='mdl-data-table__cell--non-numeric'><a href='#' onclick='openPopup(" + value.id + ");'>" + value.make + "</a></td>" +
                 "                <td class='mdl-data-table__cell--non-numeric'><a href='#' onclick='openPopup(" + value.id + ");'>" + value.model + "</a></td>" +
+                "                <td class='mdl-data-table__cell--non-numeric'><a href='#' onclick='openPopup(" + value.id + ");'>" + value.plate + "</a></td>" +
                 "            </tr>");
         });
 
@@ -59,7 +65,7 @@ var getAll = function() {
     }
 
     $.ajax({
-        url: "/cars/api/cars?currentPage="+currentPageFromLocal+"&year="+$("#yearFilter").val()+"&make="+$("#makeFilter").val()+"&model="+$("#modelFilter").val(),
+        url: "/cars/api/cars?currentPage="+currentPageFromLocal+"&year="+$("#yearFilter").val()+"&make="+$("#makeFilter").val()+"&model="+$("#modelFilter").val()+"&plate="+$("#plateFilter").val(),
         contentType: 'application/text; charset=utf-8',
         type: 'GET',
         data: JSON.stringify(datos),
@@ -78,6 +84,16 @@ function openPopup(id) {
         document.querySelector('#year').parentNode.MaterialTextfield.change(data.year);
         document.querySelector('#make').parentNode.MaterialTextfield.change(data.make);
         document.querySelector('#model').parentNode.MaterialTextfield.change(data.model);
+        document.querySelector('#plate').parentNode.MaterialTextfield.change(data.plate);
+        document.querySelector('#ownerLastName').parentNode.MaterialTextfield.change(data.ownerLastName + " (" + data.ownerDNI + ")");
+
+        $("#idOwner").val(data.ownerId);
+
+        inicializarOwnerFinder();
+
+        $('#deleteBtn').show();
+
+        dialog.showModal();
     }
 
     var failGetCar = function() {
@@ -92,8 +108,6 @@ function openPopup(id) {
         success: successGetCar,
         error: failGetCar
     });
-
-    dialog.showModal();
 }
 
 // DELETE CAR
@@ -107,13 +121,6 @@ var deleteCar = function() {
     var failDelCar = function () {
         alert("Fallo el borrado");
     }
-
-    /*data: {
-     "id" : $('#id').val(),
-     "year" : $('#year').c,
-     "make" : $('#make').val(),
-     "model" : $('#model').val()
-     },*/
 
     $.ajax({
         url: "/cars/api/cars/" + $('#id').val(),
@@ -138,35 +145,104 @@ var updateCar = function() {
     };
 
     var datos = {
-        "id" : $('#id').val(),
-        "year" : $('#year').val(),
-        "make" : $('#make').val(),
-        "model" : $('#model').val()
+        "id"        : $('#id').val(),
+        "year"      : $('#year').val(),
+        "make"      : $('#make').val(),
+        "model"     : $('#model').val(),
+        "plate"     : $('#plate').val(),
+        "idOwner"   : $('#idOwner').val()
     };
 
-    if(datos.id == null || datos.id == "") {
-        $.ajax({
-            url: "/cars/api/cars/" + $('#id').val(),
-            contentType: 'application/text; charset=utf-8',
-            type: 'POST',
-            dataType: 'JSON',
-            data: JSON.stringify(datos),
-            success: successUpdateCar,
-            error: failUpdateCar
-        });
-    } else {
-        $.ajax({
-            url: "/cars/api/cars/" + $('#id').val(),
-            contentType: 'application/text; charset=utf-8',
-            type: 'PUT',
-            dataType: 'JSON',
-            data: JSON.stringify(datos),
-            success: successUpdateCar,
-            error: failUpdateCar
-        });
+    if(validateData(datos)) {
+        if(datos.id == null || datos.id == "") {
+            $.ajax({
+                url: "/cars/api/cars/" + $('#id').val(),
+                contentType: 'application/text; charset=utf-8',
+                type: 'POST',
+                dataType: 'JSON',
+                data: JSON.stringify(datos),
+                success: successUpdateCar,
+                error: failUpdateCar
+            });
+        } else {
+            $.ajax({
+                url: "/cars/api/cars/" + $('#id').val(),
+                contentType: 'application/text; charset=utf-8',
+                type: 'PUT',
+                dataType: 'JSON',
+                data: JSON.stringify(datos),
+                success: successUpdateCar,
+                error: failUpdateCar
+            });
+        };
     };
 };
 
+validateData = function() {
+    var result = true;
+
+    var requeridoMessage = "This value is required.";
+    var formatPlateMessage = "Enter the valid format.";
+
+    if($('#year').val() == "" ) {
+        result = false;
+        $('#year').addClass("inputError");
+        $('#yearMessage').html(requeridoMessage);
+        $('#yearMessage').show();
+    } else {
+        $('#year').removeClass("inputError");
+        $('#yearMessage').hide();
+    }
+
+    if($('#make').val() == "" ) {
+        result = false;
+        $('#make').addClass("inputError");
+        $('#makeMessage').html(requeridoMessage);
+        $('#makeMessage').show();
+    } else {
+        $('#make').removeClass("inputError");
+        $('#makeMessage').hide();
+    }
+
+    if($('#model').val() == "" ) {
+        result = false;
+        $('#model').addClass("inputError");
+        $('#modelMessage').html(requeridoMessage);
+        $('#modelMessage').show();
+    } else {
+        $('#model').removeClass("inputError");
+        $('#modelMessage').hide();
+    }
+
+    if($('#plate').val() == "" ) {
+        result = false;
+        $('#plate').addClass("inputError");
+        $('#plateMessage').html(requeridoMessage);
+        $('#plateMessage').show();
+    } else {
+        if(/[A-Z]{3}[0-9]{3}/.test($('#plate').val())) {
+            $('#plate').removeClass("inputError");
+            $('#plateMessage').hide();
+        } else {
+            result = false;
+            $('#plate').addClass("inputError");
+            $('#plateMessage').html(formatPlateMessage );
+            $('#plateMessage').show();
+        }
+    }
+
+    if ($('#idOwner').val() === undefined || $('#idOwner').val() === null || $('#idOwner').val() == "") {
+        result = false;
+        $('#ownerLastName').addClass("inputError");
+        $('#ownerMessage').html(requeridoMessage);
+        $('#ownerMessage').show();
+    } else {
+        $('#ownerLastName').removeClass("inputError");
+        $('#ownerMessage').hide();
+    }
+
+    return result;
+}
 
 $(document).ready(function(){
     getAll();
@@ -176,13 +252,19 @@ $(document).ready(function(){
         getAll();
     });
 
-    $("#addOwnerBtn").click(function() {
-        $("#ownerFinder").show();
+    $('#year').blur(function() {
+        validateData();
     });
 
-    $("#saveOwnerBtn").click(function() {
-        $("#ownerFinder").hide();
+    $('#make').blur(function() {
+        validateData();
     });
 
-    $("#ownerFinder").hide();
+    $('#model').blur(function() {
+        validateData();
+    });
+
+    $('#plate').blur(function() {
+        validateData();
+    });
 });

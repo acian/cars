@@ -8,6 +8,7 @@ class CarRestController {
     static responseFormats = ['json']
 
     def carService
+    def ownerService
 
     def index(Car car) {
         params.max = new Integer(10)
@@ -26,7 +27,8 @@ class CarRestController {
                 ["id":item.id,
                  "year":item.year,
                  "make":item.make,
-                 "model":item.model
+                 "model":item.model,
+                 "plate":item.plate
                  ]
             }
         }
@@ -35,7 +37,25 @@ class CarRestController {
     }
 
     def show() {
-        respond carService.getById(params.id)
+        def car = carService.getById(params.id)
+        println car.getOwner().getLastName()
+        car.getOwner().setLastName(car.getOwner().getLastName());
+
+        def json = new JsonBuilder()
+        def root = json {
+            id            car.getId()
+            year          car.getYear()
+            make          car.getMake()
+            model         car.getModel()
+            plate         car.getPlate()
+            ownerId       car.getOwner().getId()
+            ownerDNI      car.getOwner().getDni()
+            ownerLastName car.getOwner().getLastName()
+
+        }
+
+
+        respond root
     }
 
     def create() {
@@ -45,6 +65,10 @@ class CarRestController {
     def save() {
         Car car = request.JSON;
         car.setId(null);
+
+        def owner = ownerService.getById(request.JSON.idOwner)
+        car.setOwner(owner)
+
         car = carService.saveCar(car)
 
         if(!car.hasErrors())
@@ -54,11 +78,15 @@ class CarRestController {
     def update(Car ca) {
         Car car2 = request.JSON;
 
-        ca.setModel(car2.getModel());
-        ca.setMake(car2.getMake());
-        ca.setYear(car2.getYear());
+        ca.setModel(car2.getModel())
+        ca.setMake(car2.getMake())
+        ca.setYear(car2.getYear())
+        ca.setPlate(car2.getPlate())
 
-        ca = carService.saveCar(ca);
+        def owner = ownerService.getById(request.JSON.idOwner)
+        ca.setOwner(owner)
+
+        ca = carService.saveCar(ca)
 
         if(!ca.hasErrors())
             respond status: 201

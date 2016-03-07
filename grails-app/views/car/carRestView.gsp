@@ -29,6 +29,12 @@
 					<label class="mdl-textfield__label" for="modelFilter">Model</label>
 				</div>
 			</div>
+			<div class="mdl-cell mdl-cell--4-col">
+				<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input" type="text" id="plateFilter">
+					<label class="mdl-textfield__label" for="modelFilter">Plate</label>
+				</div>
+			</div>
 			<button id="findBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
 				Find
 			</button>
@@ -40,6 +46,7 @@
 				<th>Year</th>
 				<th>Make</th>
 				<th>Model</th>
+				<th>Plate</th>
 			</tr>
 			</thead>
 			<tbody id="carTBody">
@@ -56,44 +63,62 @@
 			<div class="mdl-dialog__content">
 				<p>
 					<input type="hidden" id="id" name="id">
+					<input type="hidden" id="idOwner" name="idOwner">
 
 					<div class="mdl-textfield mdl-js-textfield">
 						<input id="year" name="year" type="text" class="mdl-textfield__input"  pattern="-?[0-9]*(\.[0-9]+)?">
 						<label for="year" class="mdl-textfield__label">Year</label>
-						<span class="mdl-textfield__error">Input is not a number!</span>
+						<span id="yearMessage" class="inputErrorMessage"></span>
 					</div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input id="make" name="make" type="text" class="mdl-textfield__input">
 						<label for="make" class="mdl-textfield__label">Make</label>
+						<span id="makeMessage" class="inputErrorMessage"></span>
 					</div>
 					<div class="mdl-textfield mdl-js-textfield">
 						<input id="model" name="model" type="text" class="mdl-textfield__input">
 						<label for="model" class="mdl-textfield__label">Model</label>
+						<span id="modelMessage" class="inputErrorMessage"></span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield">
+						<input id="plate" name="plate" type="text" class="mdl-textfield__input">
+						<label for="plate" class="mdl-textfield__label">Plate</label>
+						<span id="plateMessage" class="inputErrorMessage"></span>
 					</div>
 					<div>
 						<div class="mdl-textfield mdl-js-textfield" style="width: 60%">
-							<input id="owner" name="owner" type="text" class="mdl-textfield__input">
-							<label for="owner" class="mdl-textfield__label">Owner</label>
+							<input id="ownerLastName" name="ownerLastName" type="text" class="mdl-textfield__input">
+							<label for="ownerLastName" class="mdl-textfield__label" id="placeHolerOwnerFinder">Owner</label>
+							<span id="ownerMessage" class="inputErrorMessage"></span>
 						</div>
 						<!-- Colored FAB button with ripple -->
-						<button id="addOwnerBtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="height: 30px;">
-							<i class="material-icons">person_add</i>
+						<button id="findOwnerPopupBtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="height: 30px; margin-left: 40px;">
+							<i class="material-icons" id="iconBtnFinder">search</i>
 						</button>
 					</div>
 					<div id="ownerFinder">
-						<button id="saveOwnerBtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-							<i class="material-icons">ckeck</i>
-						</button>
+						<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+							<thead>
+							<tr>
+								<th>DNI</th>
+								<th>Last Name</th>
+								<th>Name</th>
+							</tr>
+							</thead>
+							<tbody id="ownerPopupFinderTBody">
+							</tbody>
+						</table>
 					</div>
 				<p>
 			</div>
 			<div>
 				<button type="button" class="mdl-button" onclick="javascript:updateCar();">Accept</button>
 				<button type="button" class="mdl-button close">Cancel</button>
-				<button type="button" class="mdl-button" onclick="javascript:deleteCar();">Delete</button>
+				<button id="deleteBtn" type="button" class="mdl-button" onclick="javascript:deleteCar();">Delete</button>
 			</div>
 		</dialog>
 	<g:javascript src="pagesControllers/pagination.js"/>
 	<g:javascript src="pagesControllers/carsController.js"/>
+	<g:javascript src="pagesControllers/ownerPopupFinder.js"/>
 	</body>
 </html>

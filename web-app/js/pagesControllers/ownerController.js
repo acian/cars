@@ -5,6 +5,7 @@ function clearDialog() {
     document.querySelector('#lastName').parentNode.MaterialTextfield.change("");
     document.querySelector('#name').parentNode.MaterialTextfield.change("");
     document.querySelector('#nationality').parentNode.MaterialTextfield.change("");
+    $('#deleteBtn').hide();
 };
 
 /* Configuracion del popup */
@@ -83,6 +84,9 @@ function openPopup(id) {
         document.querySelector('#lastName').parentNode.MaterialTextfield.change(data.lastName);
         document.querySelector('#name').parentNode.MaterialTextfield.change(data.name);
         document.querySelector('#nationality').parentNode.MaterialTextfield.change(data.nationality);
+        $('#deleteBtn').show();
+
+        dialog.showModal();
     }
 
     var failGetOwner = function() {
@@ -97,8 +101,6 @@ function openPopup(id) {
         success: successGetOwner,
         error: failGetOwner
     });
-
-    dialog.showModal();
 }
 
 // DELETE OWNER
@@ -143,29 +145,79 @@ var updateOwner = function() {
         "nationality" : $('#nationality').val()
     };
 
-    if(datos.id == null || datos.id == "") {
-        $.ajax({
-            url: "/cars/api/owners/" + $('#id').val(),
-            contentType: 'application/text; charset=utf-8',
-            type: 'POST',
-            dataType: 'JSON',
-            data: JSON.stringify(datos),
-            success: successUpdateOwner,
-            error: failUpdateOwner
-        });
-    } else {
-        $.ajax({
-            url: "/cars/api/owners/" + $('#id').val(),
-            contentType: 'application/text; charset=utf-8',
-            type: 'PUT',
-            dataType: 'JSON',
-            data: JSON.stringify(datos),
-            success: successUpdateOwner,
-            error: failUpdateOwner
-        });
+
+    if(validateData()) {
+        if(datos.id == null || datos.id == "") {
+            $.ajax({
+                url: "/cars/api/owners/" + $('#id').val(),
+                contentType: 'application/text; charset=utf-8',
+                type: 'POST',
+                dataType: 'JSON',
+                data: JSON.stringify(datos),
+                success: successUpdateOwner,
+                error: failUpdateOwner
+            });
+        } else {
+            $.ajax({
+                url: "/cars/api/owners/" + $('#id').val(),
+                contentType: 'application/text; charset=utf-8',
+                type: 'PUT',
+                dataType: 'JSON',
+                data: JSON.stringify(datos),
+                success: successUpdateOwner,
+                error: failUpdateOwner
+            });
+        };
     };
 };
 
+validateData = function() {
+    var result = true;
+
+    var requeridoMessage = "This value is required.";
+
+    if($('#dni').val() == "" ) {
+        result = false;
+        $('#dni').addClass("inputError");
+        $('#dniMessage').html(requeridoMessage);
+        $('#dniMessage').show();
+    } else {
+        $('#dni').removeClass("inputError");
+        $('#dniMessage').hide();
+    }
+
+    if($('#lastName').val() == "" ) {
+        result = false;
+        $('#lastName').addClass("inputError");
+        $('#lastNameMessage').html(requeridoMessage);
+        $('#lastNameMessage').show();
+    } else {
+        $('#lastName').removeClass("inputError");
+        $('#lastNameMessage').hide();
+    }
+
+    if($('#name').val() == "" ) {
+        result = false;
+        $('#name').addClass("inputError");
+        $('#nameMessage').html(requeridoMessage);
+        $('#nameMessage').show();
+    } else {
+        $('#name').removeClass("inputError");
+        $('#nameMessage').hide();
+    }
+
+    if($('#nationality').val() == "" ) {
+        result = false;
+        $('#nationality').addClass("inputError");
+        $('#nationalityMessage').html(requeridoMessage);
+        $('#nationalityMessage').show();
+    } else {
+        $('#nationality').removeClass("inputError");
+        $('#nationalityMessage').hide();
+    }
+
+    return result;
+}
 
 $(document).ready(function(){
     getAll();
@@ -173,5 +225,21 @@ $(document).ready(function(){
     $("#findBtn").click(function() {
         localStorage.setItem('currentPage', 1);
         getAll();
+    });
+
+    $('#dni').blur(function() {
+        validateData();
+    });
+
+    $('#lastName').blur(function() {
+        validateData();
+    });
+
+    $('#name').blur(function() {
+        validateData();
+    });
+
+    $('#nationality').blur(function() {
+        validateData();
     });
 });

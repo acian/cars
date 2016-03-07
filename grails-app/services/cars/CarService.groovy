@@ -76,6 +76,22 @@ class CarService {
             firstCondition = true
         }
 
+        if(params.plate != null && params.plate != "") {
+            if(!firstCondition)
+                sql += " where "
+            else
+                sql += " and "
+
+            sql += " plate like :model "
+
+            params.plate = "%"+params.plate+"%"
+            sqlParamaeters.put('model', params.plate)
+
+            firstCondition = true
+        }
+
+        sql += " order by id desc "
+
         return [sql: sql, sqlParamaeters: sqlParamaeters];
     }
 

@@ -47,9 +47,14 @@ a {
 }
 
 .mdl-dialog {
+	top: 12px;
+	width: 340px;
 	border-radius: 30px;
 }
 
+.tableItemsPopup {
+	color: #696767;
+}
 /* PAGINATION */
 
 .pagination {
@@ -61,4 +66,13 @@ a {
 /* Filter */
 .filterPanel {
 	margin-left: 2%;
+}
+
+.inputError {
+	border-color: red;
+}
+
+.inputErrorMessage {
+	color: red;
+	font-size: 13px;
 }

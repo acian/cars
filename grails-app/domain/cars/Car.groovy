@@ -5,6 +5,7 @@ class Car {
     Integer year
     String make
     String model
+    String plate
     Owner owner
 
     static constraints = {
