@@ -52,11 +52,18 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
          compile 'mysql:mysql-connector-java:5.1.38'
         // runtime 'org.postgresql:postgresql:9.3-1100-jdbc41'
+
+	    // Integrations test
+        test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+	    test "org.gebish:geb-spock:0.10.0"
     }
 
     plugins {
         // plugins for the build system only
         build ":tomcat:7.0.52.1"
+	    //Integrations test plugins
+        test ":geb:0.10.0"
+        compile ":rest-client-builder:2.1.1"
 
         // plugins for the compile step
         compile ":scaffolding:2.0.2"

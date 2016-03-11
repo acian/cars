@@ -26,8 +26,8 @@ environments {
     }
     test {
         dataSource {
-            dbCreate = "none"
-            url = "jdbc:mysql://127.0.0.1:3306/cars"
+            dbCreate = "create-drop"
+            url = "jdbc:mysql://127.0.0.1:3306/cars_test"
         }
     }
     production {
