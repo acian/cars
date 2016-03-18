@@ -20,7 +20,7 @@ $(document).ready(function() {
         var value = localStorage.getItem('cantItems');
         cantPages = Math.ceil(value/10);
 
-        if(cantPages == 0)
+        if(cantPages == 0 || cantPages === null || typeof cantPages === 'undefined')
             cantPages = 1;
 
         localStorage.setItem('cantPages', cantPages);
